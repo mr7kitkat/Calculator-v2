@@ -63,7 +63,9 @@ function parser(str) {
                 arr.push(Number(num));
                 num = '';
             }
-            return arr;
+
+            const expArr = bracketsAnalyser(arr);
+            return expArr;
         }
 
         if ( !operators.includes(c) ) {
@@ -150,6 +152,94 @@ function solver (arr) {
 
 
 
+function bracketsAnalyser (arr) {
+    const obj = {};
+    let precedance = 0;
+    let max = 0;
+
+    for (let i = 0; i <= arr.length; i++) {
+        let item = arr[i];
+
+        if (item === '(') {
+            precedance += 1;
+            
+            obj[`openBrackets${precedance}`] = {
+                name: '(',
+                order: precedance,
+                startIndex: i + 1,
+            }
+
+            if (precedance > max) {
+                max = precedance;
+            }
+        }
+
+            // '2+5-(5*10+(3*3))'
+
+        else if (item === ')') {
+            obj[`closeBrackets${precedance}`] = {
+                name:')',
+                order: precedance,
+                closeIndex: i + 1,
+                startIndex: obj[`openBrackets${precedance}`].startIndex
+            }
+
+            obj[`openBrackets${precedance}`].closeIndex = i + 1;
+
+            precedance -= 1
+        }
+    }
+
+    obj.max = max;
+    arr.unshift(obj);
+
+    return arr;
+    
+}
+
+let str = '2+5-(5*10+(3*3))';
+console.log(str);
+let exp = parser(str);
+console.log(exp);
+
+
+
+function bracketSolver(arr) {
+    
+
+    // '{} 2 + 5 - ( 5 * 10 + ( 3 * 3 ) )'
+    while (arr[0].max > 0) {
+        let bracketObj = arr[0];
+        let openBracket = bracketObj[`openBrackets${bracketObj.max}`].startIndex;
+        let closeBracket = bracketObj[`closeBrackets${bracketObj.max}`].closeIndex;
+        let deleteItems = (closeBracket - openBracket) + 1;
+
+        let subExp = arr.slice(openBracket + 1, closeBracket);
+        console.log(`bracket of precedence ${bracketObj.max} sliced exp ${subExp}`);
+        let result = solver(subExp);
+        console.log(`${subExp} solved to ${result}`);
+
+        arr.splice(openBracket, deleteItems, result);
+        console.log('current array :' + arr)
+        bracketObj.max -= 1;
+        console.log(`value of max after first execution ${bracketObj.max}`)
+
+        arr.shift()
+        console.log(arr);
+        bracketsAnalyser(arr)
+    }
+
+    if (typeof arr[0] === 'object') {
+        arr.shift();
+    }
+
+    return arr;
+}
+
+const resultArr = bracketSolver(exp);
+console.log(resultArr);
+const finalresult = solver(resultArr);
+console.log(finalresult)
 
 
 
@@ -183,7 +273,88 @@ function solver (arr) {
 
 
 
-// This ensure the test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+This ensure the test
 let item = null;
 let i = 0;
 
@@ -211,5 +382,5 @@ i += 1;
 if (i === test.length) {
     clearInterval(id);
 }
-},1000);
-
+},1000)
+*/
