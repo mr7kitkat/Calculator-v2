@@ -234,6 +234,12 @@ function calcPercent (num1, num2 = 1) {
 function isInteger(x) { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
 
 function isFloat(x) { return !!(x % 1); }
+
+function backspace() {
+  let text = inputDisplay.innerText;
+  text = text.slice(0, text.length - 1);
+  inputDisplay.innerText = text;
+}
 // ----------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -283,30 +289,69 @@ const inputDisplay = document.querySelector('#input');
 const resultDisplay = document.querySelector('#result');
 
 
+window.addEventListener('keydown', function(e) {
+  let input = e.key;
+
+  if (input === 'Backspace') {
+    backspace();
+  }
+  else if (input === 'Enter') {
+    equalBtn();
+  }
+  else if (input === 'Escape') {
+    clearAllFunc();
+  }
+
+  let acceptedInput = '()*/+-.%'
+  if (isNaN(Number(input))) {
+    if (!acceptedInput.includes(input)) {
+      input = ''
+    }
+    else if (input === '*') {
+      input = '⨯';
+    }
+    else if (input === '/') {
+      input = '÷';
+    }
+    else if (input === '+') {
+      input = '+';
+    }
+    else if (input === '-') {
+      input = '−';
+    }
+    else if (input === '%') {
+      input = '%';
+    }
+  }
+  inputDisplay.innerText += input;
+})
+
 const inputButtons = document.querySelectorAll('.input');
 inputButtons.forEach(button => {
   button.addEventListener('click', function(e){
     let input = e.target.innerText;
+    const mathOpr = '÷⨯−+';
+    let lastChar= inputDisplay.innerText.slice(-1);
+
+    if (mathOpr.includes(input) && mathOpr.includes(lastChar))
     inputDisplay.innerText += input;
   })
 })
 
 const backspaceButton = document.querySelector('#backspace');
-backspaceButton.addEventListener('click', function() {
-  let text = inputDisplay.innerText;
-  text = text.slice(0, text.length - 1);
-  inputDisplay.innerText = text;
-})
+backspaceButton.addEventListener('click', backspace);
 
 const clearAllButton = document.querySelector('#clear');
-clearAllButton.addEventListener('click', function() {
+function clearAllFunc() {
   inputDisplay.innerText = '';
   resultDisplay.innerText = '';
-})
+}
+clearAllButton.addEventListener('click', clearAllFunc);
 
 const equalButton = document.querySelector('#equal');
-equalButton.addEventListener('click', function() {
+function equalBtn() {
   let str = inputDisplay.innerText;
   let result = evaluate(str);
   resultDisplay.innerText = result;
-})
+}
+equalButton.addEventListener('click', equalBtn);
