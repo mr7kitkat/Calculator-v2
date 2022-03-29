@@ -1,6 +1,42 @@
+/*
+NAME OF THE FILE = app.js
+
+PURPOSE = 
+A simple code file for Calculator in Vanilla Js
+
+
+*************Areas***********
+1. Functions  (line1 - line282)
+      a. Analyzers
+      b. bracketAnalyzer
+      c. fullAnalyzer (Analyzers + bracketAnalyzer)
+      d. solver
+      e. percentageSolver
+      f. bracketSolver
+      g. calculate
+      h. evaluate
+
+2. Test for function (commented out) -  (line456 - line492)
+3. Event Listners  -  (line587 - line670)
+      a. Keyboard input
+      b. click input
+
+*/
+
+
+
+
+
+
+
+
+
+
 //---------------------------------------------------- Functions------------------------------------------------------------
 const operators = '()*/+-%';
-//Analyzers
+
+// The Below function takes an string as input and convert it and returns an array
+//----------------------------------------------Analyzers-----------------------------------------------
 function analyzer(str) {
   const exp = [];
   let num = ''
@@ -42,7 +78,9 @@ function analyzer(str) {
     }
   }
 }
+// -----------------------------------------------------------------------------------------------------
 
+// This function analyses brackets and put an object in array which is returned by analyzer function
 function bracketAnalyzer(arr) {
   const bracket = {}
   let maxOccursion = 0;
@@ -78,8 +116,9 @@ function bracketAnalyzer(arr) {
  }
   
 }
+// -----------------------------------------------------------------------------------------------------
 
-
+// it combines analyzer and bracketAnalyzer function and returns a fully cooked array
 function fullAnalyzer(str) {
   let arr = analyzer(str);
   if (arr.includes('(') || arr.includes(')')) {
@@ -88,7 +127,9 @@ function fullAnalyzer(str) {
   
   return arr;
 }
+// -----------------------------------------------------------------------------------------------------
 
+// it takes symbol and two arguments as input and run propriate operation on it.
 //Expression solver
 function solver(sym, arg1, arg2) {
   
@@ -106,7 +147,9 @@ function solver(sym, arg1, arg2) {
   }
   
 }
+// -----------------------------------------------------------------------------------------------------
 
+// It solves percentage and modify the array -----------------------------------
 function percentageSolver(arr) {
   let percentIdx = arr.indexOf('%');
   let noWithPercent = arr[percentIdx - 1];
@@ -124,7 +167,34 @@ function percentageSolver(arr) {
   res = calcPercent(noWithPercent,num2);
     arr.splice(percentIdx - 1, 2, res);
 }
+// -----------------------------------------------------------------------------------------------------
 
+
+// It solve bracket first and modify an array----------------------------------------------------------
+function bracketSolver(arr) {
+  
+  
+  while (arr.includes('(') || arr.includes(')')) {
+    let obj = arr[0];
+    let max = obj.max;
+  
+    let start = obj[`b${max}`].start;
+    let end = obj[`b${max}`].end;
+    let del = (end - start) + 1;
+    
+    let subArr = arr.slice(start + 1, end);
+    let res = calculate(subArr);
+    arr.splice(start, del, res);
+    arr.shift();
+   
+    if (arr.includes('(') || arr.includes(')')) {
+      bracketAnalyzer(arr)
+    }
+  }
+}
+// -----------------------------------------------------------------------------------------------------
+
+// It runs overall all operation on array and return a single value ------------
 function calculate(arr) {
   while(arr.length > 1) {
 
@@ -180,29 +250,20 @@ function calculate(arr) {
   }
   return result;
 }
+// -----------------------------------------------------------------------------------------------------
 
-function bracketSolver(arr) {
-  
-  
-  while (arr.includes('(') || arr.includes(')')) {
-    let obj = arr[0];
-    let max = obj.max;
-  
-    let start = obj[`b${max}`].start;
-    let end = obj[`b${max}`].end;
-    let del = (end - start) + 1;
-    
-    let subArr = arr.slice(start + 1, end);
-    let res = calculate(subArr);
-    arr.splice(start, del, res);
-    arr.shift();
-   
-    if (arr.includes('(') || arr.includes(')')) {
-      bracketAnalyzer(arr)
-    }
-  }
-}
 
+
+
+
+
+
+
+
+
+
+// It takes a single string, then analyse it, solve expression and return a single value
+// IT IS THE SUM OF ALL THE FUNCTIONS 
 function evaluate(str) {
   let arr = fullAnalyzer(str);
   if (typeof arr[0] === 'object') {
@@ -212,6 +273,16 @@ function evaluate(str) {
   let res = calculate(arr);
   return res;
 }
+// -----------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 
 //Mathematical Functions
 function calcSum (num1, num2 = 0) {
@@ -231,16 +302,150 @@ function calcPercent (num1, num2 = 1) {
 }
 
 // these two Copied from Stackoverflow (:-P)------------
+// IT checks if a number is integer or not
 function isInteger(x) { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
-
+// IT checks if a number is float or not
 function isFloat(x) { return !!(x % 1); }
 
-function backspace() {
-  let text = inputDisplay.innerText;
-  text = text.slice(0, text.length - 1);
-  inputDisplay.innerText = text;
+
+
+
+
+let bracketCount = 0;
+// It runs validation on each input and returns a value which force user to have right input
+function validationCheckupOnEachInput(input) {
+  const mathOpr = '÷⨯−+';
+  let lastChar= inputDisplay.innerText.slice(-1);
+
+  if (mathOpr.includes(input) && mathOpr.includes(lastChar)) {
+    input = ''
+  }
+  else if (input === '%' && lastChar === '%') {
+    input = ''
+  }
+  else if (input === '%' && mathOpr.includes(lastChar)) {
+    input = ''
+  }
+  else if (lastChar === '%' && !mathOpr.includes(input)){
+    input = ''
+  }
+  else if (lastChar === ')' && !mathOpr.includes(input)){
+    input = ''
+  }
+  else if (bracketCount === 0 && input === ')') {
+    input = ''
+  }
+  else if (input === '(') {
+    
+    if (lastChar === '(') {
+      input = '('
+      bracketCount += 1;
+    }
+    else if (!mathOpr.includes(lastChar)) {
+      input = '';
+    }
+    else {
+      input = '('
+      bracketCount += 1;
+    }
+  }
+  else if (input === ')') {
+    
+    if (lastChar === ')') {
+      input = ')'
+      bracketCount -= 1;
+    }
+    else if (mathOpr.includes(lastChar)) {
+      input = '';
+    }
+    else {
+      input = ')'
+      bracketCount -= 1;
+    }
+  }
+  
+
+  return input;
 }
-// ----------------------------------------------------
+// -------------------------------------
+
+// ===========================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 // //---------------------------------------- Test zone---------------------------
@@ -284,11 +489,101 @@ function backspace() {
 
 
 
-// Displays 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =================================================== Displays =============================================================
 const inputDisplay = document.querySelector('#input');
 const resultDisplay = document.querySelector('#result');
 
 
+// THIS EVENT LISTNER TAKES KEYBOARD INPUT
 window.addEventListener('keydown', function(e) {
   let input = e.key;
 
@@ -323,31 +618,43 @@ window.addEventListener('keydown', function(e) {
       input = '%';
     }
   }
+
+  input = validationCheckupOnEachInput(input);
+
   inputDisplay.innerText += input;
 })
 
+// THIS TAKES CLICK INPUT
 const inputButtons = document.querySelectorAll('.input');
 inputButtons.forEach(button => {
   button.addEventListener('click', function(e){
     let input = e.target.innerText;
-    const mathOpr = '÷⨯−+';
-    let lastChar= inputDisplay.innerText.slice(-1);
-
-    if (mathOpr.includes(input) && mathOpr.includes(lastChar))
+    input = validationCheckupOnEachInput(input);
     inputDisplay.innerText += input;
   })
 })
 
+// THIS REMOVES A CHARACTER FROM INPUT BOX
 const backspaceButton = document.querySelector('#backspace');
+function backspace() {
+  let text = inputDisplay.innerText;
+  text = text.slice(0, text.length - 1);
+  inputDisplay.innerText = text;
+}
 backspaceButton.addEventListener('click', backspace);
 
+
+// THIS CLEAR INPUT BOX AND RESULT BOX
 const clearAllButton = document.querySelector('#clear');
 function clearAllFunc() {
   inputDisplay.innerText = '';
   resultDisplay.innerText = '';
+  bracketCount = 0;
 }
 clearAllButton.addEventListener('click', clearAllFunc);
 
+
+// THIS SHOWS RESULT ON PRESS EQUAL BUTTON
 const equalButton = document.querySelector('#equal');
 function equalBtn() {
   let str = inputDisplay.innerText;
