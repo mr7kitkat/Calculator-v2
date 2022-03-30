@@ -659,6 +659,9 @@ const equalButton = document.querySelector('#equal');
 function equalBtn() {
   let str = inputDisplay.innerText;
   let result = evaluate(str);
+  if (!result) {
+    result = 0;
+  }
   resultDisplay.innerText = result;
 }
 equalButton.addEventListener('click', equalBtn);

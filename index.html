@@ -9,10 +9,10 @@
 
 </head>
 <body class="container h-screen flex justify-center items-center font-sans box-border">
-    <main class="border lg p-2">
+    <main class="border lg p-2 max-w-[620px] ">
         <section class="grid grid-rows-2 border">
-            <p class="text-xl px-5 py-2 h-14 text-right" id="input"></p>
-            <p class="text-3xl font-bold px-5 py-2 h-14 text-right" id="result"></p>
+            <p class="text-xl px-5 py-2 h-14 text-right overflow-hidden " id="input"></p>
+            <p class="text-3xl font-bold px-5 py-2 h-14 text-right overflow-hidden" id="result"></p>
         </section>
         <section class="grid grid-rows-6 grid-cols-4">
                 <button class="input border bg-zinc-900 hover:bg-black text-white font-bold py-4 px-5 text-2xl rounded col-span-2">(</button>
@@ -21,7 +21,7 @@
             
                 <button id="clear" class="border bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-5 text-2xl rounded">C</button>
                 <button class="input border bg-zinc-900 hover:bg-black text-white font-bold py-4 px-5 text-2xl rounded">%</button>
-                <button id="backspace" class="border bg-zinc-900 hover:bg-black text-white font-bold py-4 px-5 text-2xl rounded">
+                <button id="backspace" class="border bg-zinc-900 hover:bg-black text-white font-bold py-4 px-5 text-2xl rounded flex justify-center items-center ">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M6.707 4.879A3 3 0 018.828 4H15a3 3 0 013 3v6a3 3 0 01-3 3H8.828a3 3 0 01-2.12-.879l-4.415-4.414a1 1 0 010-1.414l4.414-4.414zm4 2.414a1 1 0 00-1.414 1.414L10.586 10l-1.293 1.293a1 1 0 101.414 1.414L12 11.414l1.293 1.293a1 1 0 001.414-1.414L13.414 10l1.293-1.293a1 1 0 00-1.414-1.414L12 8.586l-1.293-1.293z" clip-rule="evenodd" />
                       </svg>
